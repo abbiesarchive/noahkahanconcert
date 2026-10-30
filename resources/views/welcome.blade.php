@@ -144,7 +144,7 @@
                     <div class="detail"><span class="detail-label">Venue</span><span class="detail-value">Kebun Raya, Jakarta</span></div>
                     <div class="detail"><span class="detail-label">Entry</span><span class="detail-value">From gate 03 · standing</span></div>
                 </div>
-                <div class="note">Limited capacity · one registration per email</div>
+                <div class="note">Limited capacity · confirmation sent to your email</div>
             </div>
 
             <div class="ticket-panel">

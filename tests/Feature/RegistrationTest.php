@@ -46,18 +46,20 @@ class RegistrationTest extends TestCase
         $mail->assertSeeInHtml('02 August 2025');
     }
 
-    public function test_duplicate_email_is_rejected(): void
+    public function test_same_email_can_register_more_than_once(): void
     {
         Mail::fake();
-        Registration::factory()->create(['email' => 'jane@example.com']);
 
-        $this->post(route('registration.store'), [
-            'name' => 'Jane Doe',
-            'email' => 'jane@example.com',
-            'ticket_quantity' => 1,
-            'agree' => '1',
-        ])->assertSessionHasErrors('email');
+        foreach (range(1, 2) as $attempt) {
+            $this->post(route('registration.store'), [
+                'name' => 'Teaching Team',
+                'email' => 'teacher@example.com',
+                'ticket_quantity' => 1,
+                'agree' => '1',
+            ])->assertSessionHasNoErrors();
+        }
 
-        Mail::assertNothingSent();
+        $this->assertDatabaseCount('registrations', 2);
+        Mail::assertSent(RegistrationEmail::class, 2);
     }
 }

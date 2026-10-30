@@ -24,7 +24,7 @@ class StoreRegistrationRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:registrations,email'],
+            'email' => ['required', 'email', 'max:255'],
             'ticket_quantity' => ['required', 'integer', 'between:1,4'],
             'agree' => ['accepted'],
         ];

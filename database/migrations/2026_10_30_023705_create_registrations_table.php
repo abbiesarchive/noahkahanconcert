@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('registrations', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email');
             $table->unsignedTinyInteger('ticket_quantity');
             $table->string('ticket_type');
             $table->string('concert_schedule');
