@@ -180,7 +180,7 @@
                         <input id="agree" name="agree" type="checkbox" value="1" required>
                         <label for="agree">I agree to the event terms and understand that tickets are non-refundable.</label>
                     </div>
-                    <button class="submit" type="submit">Continue to payment <span>→</span></button>
+                    <button class="submit" type="submit">Send to my email <span>→</span></button>
                 </form>
                 <div class="success @if (session('registered_name')) visible @endif" id="success" role="status">
                     <strong>You're on the list.</strong>
