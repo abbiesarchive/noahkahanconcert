@@ -152,14 +152,18 @@
                     <h3>Reserve your ticket</h3>
                     <p>Fill in your details and we will hold your spot.</p>
                 </div>
-                <form id="registration-form">
+                @if ($errors->any())
+                    <div class="note" role="alert" style="color: var(--rust); margin: 0 0 19px;">{{ $errors->first() }}</div>
+                @endif
+                <form id="registration-form" method="POST" action="{{ route('registration.store') }}" @if (session('registered_name')) style="display: none;" @endif>
+                    @csrf
                     <div class="field">
                         <label for="name">Full name</label>
-                        <input id="name" name="name" type="text" placeholder="Your full name" required>
+                        <input id="name" name="name" type="text" value="{{ old('name') }}" placeholder="Your full name" required>
                     </div>
                     <div class="field">
                         <label for="email">Email address</label>
-                        <input id="email" name="email" type="email" placeholder="you@example.com" required>
+                        <input id="email" name="email" type="email" value="{{ old('email') }}" placeholder="you@example.com" required>
                     </div>
                     <div class="ticket-option">
                         <div><strong>General admission</strong><small>Standing area · entry wristband</small></div>
@@ -167,19 +171,20 @@
                     </div>
                     <div class="quantity" aria-label="Ticket quantity">
                         <button type="button" id="decrease" aria-label="Decrease ticket quantity">−</button>
-                        <span class="quantity-value" id="quantity">1</span>
+                        <span class="quantity-value" id="quantity">{{ old('ticket_quantity', 1) }}</span>
+                        <input type="hidden" name="ticket_quantity" id="ticket-quantity-input" value="{{ old('ticket_quantity', 1) }}">
                         <button type="button" id="increase" aria-label="Increase ticket quantity">+</button>
                         <span style="color: var(--muted); font-size: 12px; margin-left: 2px;">tickets</span>
                     </div>
                     <div class="terms">
-                        <input id="agree" type="checkbox" required>
+                        <input id="agree" name="agree" type="checkbox" value="1" required>
                         <label for="agree">I agree to the event terms and understand that tickets are non-refundable.</label>
                     </div>
                     <button class="submit" type="submit">Continue to payment <span>→</span></button>
                 </form>
-                <div class="success" id="success" role="status">
+                <div class="success @if (session('registered_name')) visible @endif" id="success" role="status">
                     <strong>You're on the list.</strong>
-                    <p>Thanks, <span id="success-name">friend</span>. Your ticket details are ready in your inbox.</p>
+                    <p>Thanks, <span id="success-name">{{ session('registered_name') ? explode(' ', trim(session('registered_name')))[0] : 'friend' }}</span>. Your ticket details are ready in your inbox.</p>
                 </div>
             </div>
         </section>
@@ -192,21 +197,18 @@
         const form = document.getElementById('registration-form');
         const success = document.getElementById('success');
         const successName = document.getElementById('success-name');
-        let tickets = 1;
+        const quantityInput = document.getElementById('ticket-quantity-input');
+        let tickets = parseInt(quantityInput.value, 10) || 1;
 
         document.getElementById('decrease').addEventListener('click', () => {
             tickets = Math.max(1, tickets - 1);
             quantity.textContent = tickets;
+            quantityInput.value = tickets;
         });
         document.getElementById('increase').addEventListener('click', () => {
             tickets = Math.min(4, tickets + 1);
             quantity.textContent = tickets;
-        });
-        form.addEventListener('submit', (event) => {
-            event.preventDefault();
-            successName.textContent = document.getElementById('name').value.trim().split(' ')[0] || 'friend';
-            form.style.display = 'none';
-            success.classList.add('visible');
+            quantityInput.value = tickets;
         });
     </script>
 </body>
