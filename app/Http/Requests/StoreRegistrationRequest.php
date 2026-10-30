@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Registration;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreRegistrationRequest extends FormRequest
 {
@@ -26,6 +28,7 @@ class StoreRegistrationRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
             'ticket_quantity' => ['required', 'integer', 'between:1,4'],
+            'schedule' => ['required', Rule::in(array_keys(Registration::SCHEDULES))],
             'agree' => ['accepted'],
         ];
     }

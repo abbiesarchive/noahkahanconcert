@@ -78,7 +78,7 @@
         .panel-heading p { color: var(--muted); font-size: 13px; margin: 0; }
         .field { display: grid; gap: 8px; margin-bottom: 19px; }
         label { font-size: 12px; font-weight: 700; letter-spacing: .04em; }
-        input[type='text'], input[type='email'] { background: transparent; border: 1px solid var(--line); border-radius: 0; color: var(--pine); outline: none; padding: 13px 14px; transition: border-color .2s, box-shadow .2s; width: 100%; }
+        input[type='text'], input[type='email'], select { background: transparent; border: 1px solid var(--line); border-radius: 0; color: var(--pine); outline: none; padding: 13px 14px; transition: border-color .2s, box-shadow .2s; width: 100%; }
         input:focus { border-color: var(--forest); box-shadow: 3px 3px 0 var(--sun); }
         .ticket-option { align-items: center; border: 1px solid var(--forest); display: flex; justify-content: space-between; margin-bottom: 24px; padding: 15px; }
         .ticket-option strong { display: block; font-size: 14px; margin-bottom: 4px; }
@@ -164,6 +164,15 @@
                     <div class="field">
                         <label for="email">Email address</label>
                         <input id="email" name="email" type="email" value="{{ old('email') }}" placeholder="you@example.com" required>
+                    </div>
+                    <div class="field">
+                        <label for="schedule">Concert schedule</label>
+                        <select id="schedule" name="schedule" required>
+                            <option value="" disabled @selected(! old('schedule'))>Choose a date</option>
+                            @foreach (\App\Models\Registration::SCHEDULES as $key => $label)
+                                <option value="{{ $key }}" @selected(old('schedule') === $key)>{{ $label }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="ticket-option">
                         <div><strong>General admission</strong><small>Standing area · entry wristband</small></div>

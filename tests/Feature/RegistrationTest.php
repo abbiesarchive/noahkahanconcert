@@ -20,6 +20,7 @@ class RegistrationTest extends TestCase
             'name' => 'Jane Doe',
             'email' => 'jane@example.com',
             'ticket_quantity' => 2,
+            'schedule' => 'sun-03-aug',
             'agree' => '1',
         ]);
 
@@ -27,6 +28,7 @@ class RegistrationTest extends TestCase
         $this->assertDatabaseHas('registrations', [
             'email' => 'jane@example.com',
             'ticket_quantity' => 2,
+            'concert_schedule' => Registration::SCHEDULES['sun-03-aug'],
         ]);
 
         Mail::assertSent(RegistrationEmail::class, function (RegistrationEmail $mail): bool {
@@ -43,7 +45,7 @@ class RegistrationTest extends TestCase
 
         $mail->assertSeeInHtml('Jane Doe');
         $mail->assertSeeInHtml($registration->ticket_type);
-        $mail->assertSeeInHtml('02 August 2025');
+        $mail->assertSeeInHtml($registration->concert_schedule);
     }
 
     public function test_same_email_can_register_more_than_once(): void
@@ -55,11 +57,27 @@ class RegistrationTest extends TestCase
                 'name' => 'Teaching Team',
                 'email' => 'teacher@example.com',
                 'ticket_quantity' => 1,
+                'schedule' => 'sun-03-aug',
                 'agree' => '1',
             ])->assertSessionHasNoErrors();
         }
 
         $this->assertDatabaseCount('registrations', 2);
         Mail::assertSent(RegistrationEmail::class, 2);
+    }
+
+    public function test_unknown_schedule_is_rejected(): void
+    {
+        Mail::fake();
+
+        $this->post(route('registration.store'), [
+            'name' => 'Jane Doe',
+            'email' => 'jane@example.com',
+            'ticket_quantity' => 1,
+            'schedule' => 'not-a-date',
+            'agree' => '1',
+        ])->assertSessionHasErrors('schedule');
+
+        Mail::assertNothingSent();
     }
 }

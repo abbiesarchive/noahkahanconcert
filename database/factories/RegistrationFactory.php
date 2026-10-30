@@ -22,7 +22,7 @@ class RegistrationFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'ticket_quantity' => fake()->numberBetween(1, 4),
             'ticket_type' => 'General admission',
-            'concert_schedule' => 'Saturday, 02 August 2025 · Doors open 17:00 WIB',
+            'concert_schedule' => fake()->randomElement(Registration::SCHEDULES),
         ];
     }
 }
