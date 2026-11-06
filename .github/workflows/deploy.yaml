@@ -27,7 +27,7 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.3' # Laravel 13 requires PHP 8.3 or higher
+        php-version: '8.4' # Matches the project's PHP version (Laravel 13 requires 8.3+)
         extensions: mbstring, xml, ctype, iconv, mysql, bcmath, gd, zip
         coverage: none
 
