@@ -6,12 +6,19 @@ on:
 
 jobs:
   laravel-tests:
-    name: Run Tests
+    name: Run Tests & Build Assets
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GH_TOKEN }}
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
@@ -39,6 +46,23 @@ jobs:
 
     - name: Run Tests
       run: php artisan test
+
+    # Compile frontend production assets (Vite) so they are ready for deployment
+    - name: Install NPM Dependencies & Build Assets
+      run: |
+        npm ci
+        npm run build
+
+    # Push compiled production assets back to Git so the server gets them on git pull
+    - name: Commit Built Assets
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add public/build -f
+        git diff-index --quiet HEAD || git commit -m "chore: build production assets [skip ci]"
+        git push origin main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
   deploy:
     name: Deploy to Live Hosting
